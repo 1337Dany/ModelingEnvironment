@@ -1,22 +1,31 @@
 package ui.modelanddata;
 
+import data.Model;
+import ui.ViewCallback;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class ModelAndDataPanel extends JPanel {
+    private final ViewCallback viewCallback;
     private final JPanel choosePanel = new JPanel();
     private final JButton chooseButton = new JButton("Run model");
     private final JPanel modelPanel = new JPanel();
     private final JScrollPane modelScrollPane = new JScrollPane(modelPanel);
     private final JPanel dataPanel = new JPanel();
     private final JScrollPane dataScrollPane = new JScrollPane(dataPanel);
-    private static final Dimension modelAndDataSize = new Dimension(100, 50);
+    private Model selectedModel;
+    private JLabel selectedData;
 
-    public ModelAndDataPanel() {
+    public ModelAndDataPanel(ViewCallback viewCallback) {
+        this.viewCallback = viewCallback;
+
         configureModelPanel();
         configureDataPanel();
+
         configureChoosePanel();
         configure();
     }
@@ -28,10 +37,21 @@ public class ModelAndDataPanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JLabel selectModeAndDataLabel = new JLabel("Select Model and Data");
         selectModeAndDataLabel.setBounds(0, 0, 200, 25);
+        selectModeAndDataLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         add(selectModeAndDataLabel, BorderLayout.NORTH);
         add(choosePanel, BorderLayout.CENTER);
+
+        chooseButton.addActionListener(e -> {
+            if (selectedModel != null && selectedData != null) {
+               viewCallback.runModel(selectedModel, selectedData.getText());
+            }
+        });
+
         add(chooseButton, BorderLayout.SOUTH);
+
+        revalidate();
+        repaint();
     }
 
     private void configureChoosePanel() {
@@ -45,41 +65,47 @@ public class ModelAndDataPanel extends JPanel {
     private void configureModelPanel() {
         modelPanel.setLayout(new BoxLayout(modelPanel, BoxLayout.Y_AXIS));
         modelPanel.setBackground(Color.WHITE);
-        modelPanel.setPreferredSize(modelAndDataSize);
-        modelPanel.setMinimumSize(modelAndDataSize);
+        modelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
 
-        //test
-        for (int i = 1; i <= 50; i++) {
-            addModel("Model " + i);
+        //  adding models
+        for(Model model : viewCallback.getModels()) {
+            addModel(model);
         }
-
-        modelScrollPane.getVerticalScrollBar().setOpaque(false);
-        modelScrollPane.setOpaque(false);
-        modelScrollPane.getViewport().setOpaque(false);
     }
 
-    public void addModel(String modelName) {
+    public void addModel(Model model) {
         SwingUtilities.invokeLater(() -> {
-            JLabel label = new JLabel(modelName);
-            modelPanel.add(label);
+            model.setBackground(new Color(0, 191, 255));
+            modelPanel.add(model);
 
-            label.addMouseListener(new MouseAdapter() {
+            model.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
+                    if (selectedModel != null) {
+                        selectedModel.setOpaque(false);
+                        selectedModel.repaint();
+                    }
+                    model.setOpaque(true);
+                    selectedModel = model;
 
+                    model.repaint();
                 }
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    super.mouseEntered(e);
-                    label.setBackground(Color.ORANGE);
+                    if (selectedModel != model) {
+                        model.setOpaque(true);
+                    }
+                    model.repaint();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    super.mouseExited(e);
-                    label.setBackground(Color.WHITE);
+                    if (selectedModel != model) {
+                        model.setOpaque(false);
+                    }
+                    model.repaint();
                 }
             });
 
@@ -93,23 +119,48 @@ public class ModelAndDataPanel extends JPanel {
     private void configureDataPanel() {
         dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.Y_AXIS));
         dataPanel.setBackground(Color.WHITE);
-        dataPanel.setPreferredSize(modelAndDataSize);
-        dataPanel.setMinimumSize(modelAndDataSize);
+        dataPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
 
-        //test
-        for (int i = 1; i <= 50; i++) {
-            addData("Data " + i);
+        for(File file : viewCallback.getDatas()) {
+            addData(file.getName());
         }
-
-        dataScrollPane.getVerticalScrollBar().setOpaque(false);
-        dataScrollPane.setOpaque(false);
-        dataScrollPane.getViewport().setOpaque(false);
     }
 
     public void addData(String fileName) {
         SwingUtilities.invokeLater(() -> {
             JLabel label = new JLabel(fileName);
+            label.setBackground(new Color(0, 191, 255));
             dataPanel.add(label);
+
+            label.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (selectedData != null) {
+                        selectedData.setOpaque(false);
+                        selectedData.repaint();
+                    }
+                    label.setOpaque(true);
+                    selectedData = label;
+
+                    label.repaint();
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    if (selectedData != label) {
+                        label.setOpaque(true);
+                    }
+                    label.repaint();
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    if (selectedData != label) {
+                        label.setOpaque(false);
+                    }
+                    label.repaint();
+                }
+            });
 
             dataScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             dataScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

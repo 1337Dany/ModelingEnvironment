@@ -1,8 +1,13 @@
 package data.models;
 
-public class Model1 {
+import data.Model;
 
-/*
+public class Model1 extends Model {
+    public Model1(String data) {
+        super(data);
+    }
+
+    /*
  * The data passed through this model will look like:
  * <p>
  * LATA  2015       2016         2017          2018            2019
