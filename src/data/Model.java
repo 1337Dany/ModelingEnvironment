@@ -2,12 +2,10 @@ package data;
 
 import javax.swing.*;
 
-public class Model extends JLabel {
+public interface Model {
     /**
      * Models is classes through which the data is passed to the view.
      */
 
-    public Model(String modelName) {
-        this.setText(modelName);
-    }
+    void run();// This method is called when the model is run.
 }

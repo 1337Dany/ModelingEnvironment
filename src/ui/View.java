@@ -1,10 +1,8 @@
 package ui;
 
-import data.Model;
 import domain.Presenter;
 import domain.PresenterContract;
 import domain.SettingsSetter;
-import ui.modelanddata.ModelAndDataPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +12,7 @@ import java.util.List;
 public class View extends JFrame implements ViewCallback {
     private final PresenterContract presenter = new Presenter();
     private final ModelAndDataPanel modelAndDataPanel = new ModelAndDataPanel(this);
+    private final TableAndScripts tableAndScripts = new TableAndScripts();
     private static final Dimension frameSize = new Dimension(1000, 600);
     private final SettingsSetter settingsSetter = new SettingsSetter(this);
 
@@ -34,11 +33,12 @@ public class View extends JFrame implements ViewCallback {
 
     private void openMenu() {
         add(modelAndDataPanel, BorderLayout.WEST);
+        add(tableAndScripts, BorderLayout.CENTER);
 
     }
 
     @Override
-    public List<Model> getModels() {
+    public List<String> getModels() {
         return presenter.getModels();
     }
 
@@ -48,7 +48,7 @@ public class View extends JFrame implements ViewCallback {
     }
 
     @Override
-    public void runModel(Model model, String dataFileName) {
+    public void runModel(String model, String dataFileName) {
         presenter.runModel(model, dataFileName);
     }
 }

@@ -1,4 +1,4 @@
-package ui.modelanddata;
+package ui;
 
 import data.Model;
 import ui.ViewCallback;
@@ -17,7 +17,7 @@ public class ModelAndDataPanel extends JPanel {
     private final JScrollPane modelScrollPane = new JScrollPane(modelPanel);
     private final JPanel dataPanel = new JPanel();
     private final JScrollPane dataScrollPane = new JScrollPane(dataPanel);
-    private Model selectedModel;
+    private JLabel selectedModel;
     private JLabel selectedData;
 
     public ModelAndDataPanel(ViewCallback viewCallback) {
@@ -44,7 +44,7 @@ public class ModelAndDataPanel extends JPanel {
 
         chooseButton.addActionListener(e -> {
             if (selectedModel != null && selectedData != null) {
-               viewCallback.runModel(selectedModel, selectedData.getText());
+               viewCallback.runModel(selectedModel.getText(), selectedData.getText());
             }
         });
 
@@ -68,17 +68,18 @@ public class ModelAndDataPanel extends JPanel {
         modelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
 
         //  adding models
-        for(Model model : viewCallback.getModels()) {
+        for(String model : viewCallback.getModels()) {
             addModel(model);
         }
     }
 
-    public void addModel(Model model) {
+    public void addModel(String model) {
         SwingUtilities.invokeLater(() -> {
-            model.setBackground(new Color(0, 191, 255));
-            modelPanel.add(model);
+            JLabel modelLable = new JLabel(model);
+            modelLable.setBackground(new Color(0, 191, 255));
+            modelPanel.add(modelLable);
 
-            model.addMouseListener(new MouseAdapter() {
+            modelLable.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
@@ -86,26 +87,26 @@ public class ModelAndDataPanel extends JPanel {
                         selectedModel.setOpaque(false);
                         selectedModel.repaint();
                     }
-                    model.setOpaque(true);
-                    selectedModel = model;
+                    modelLable.setOpaque(true);
+                    selectedModel = modelLable;
 
-                    model.repaint();
+                    modelLable.repaint();
                 }
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    if (selectedModel != model) {
-                        model.setOpaque(true);
+                    if (selectedModel != modelLable) {
+                        modelLable.setOpaque(true);
                     }
-                    model.repaint();
+                    modelLable.repaint();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    if (selectedModel != model) {
-                        model.setOpaque(false);
+                    if (selectedModel != modelLable) {
+                        modelLable.setOpaque(false);
                     }
-                    model.repaint();
+                    modelLable.repaint();
                 }
             });
 
