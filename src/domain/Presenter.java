@@ -32,11 +32,20 @@ public class Presenter implements PresenterContract {
     }
 
     @Override
-    public void runModel(String model, String dataFileName) {
+    public String runModel(String model, String dataFileName) {
         //  Run the model
         Controller ctl = new Controller(model);
         ctl.readDataFrom(Data.DATA_SOURCE.getPath() + "/" + dataFileName).runModel();
-        String res= ctl .getResultsAsTsv();
+        String res = ctl.getResultsAsTsv();
         System.out.println(res);
+
+        return res;
+    }
+
+    @Override
+    public String[] getYears(String dataFileName) {
+        //  Get the years from the data
+        Controller ctl = new Controller("Model1");
+        return ctl.getYears(Data.DATA_SOURCE.getPath() + "/" + dataFileName);
     }
 }

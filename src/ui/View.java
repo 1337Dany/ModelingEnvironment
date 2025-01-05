@@ -3,16 +3,20 @@ package ui;
 import domain.Presenter;
 import domain.PresenterContract;
 import domain.SettingsSetter;
+import ui.modelanddata.ModelAndDataCallback;
+import ui.modelanddata.ModelAndDataPanel;
+import ui.tableandscripts.TableAndScriptsCallback;
+import ui.tableandscripts.TableAndScriptsPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.List;
 
-public class View extends JFrame implements ViewCallback {
+public class View extends JFrame implements ViewContract, ModelAndDataCallback, TableAndScriptsCallback {
     private final PresenterContract presenter = new Presenter();
     private final ModelAndDataPanel modelAndDataPanel = new ModelAndDataPanel(this);
-    private final TableAndScripts tableAndScripts = new TableAndScripts();
+    private final TableAndScriptsPanel tableAndScriptsPanel = new TableAndScriptsPanel(this);
     private static final Dimension frameSize = new Dimension(1000, 600);
     private final SettingsSetter settingsSetter = new SettingsSetter(this);
 
@@ -25,6 +29,7 @@ public class View extends JFrame implements ViewCallback {
 
     private void configure() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setTitle("Model Environment");
         this.setSize(frameSize);
         this.setLocationRelativeTo(null);   // center the window
         this.setLayout(new BorderLayout());
@@ -33,7 +38,7 @@ public class View extends JFrame implements ViewCallback {
 
     private void openMenu() {
         add(modelAndDataPanel, BorderLayout.WEST);
-        add(tableAndScripts, BorderLayout.CENTER);
+        add(tableAndScriptsPanel, BorderLayout.CENTER);
 
     }
 
@@ -49,6 +54,11 @@ public class View extends JFrame implements ViewCallback {
 
     @Override
     public void runModel(String model, String dataFileName) {
-        presenter.runModel(model, dataFileName);
+        tableAndScriptsPanel.updateTable(presenter.runModel(model, dataFileName), dataFileName);
+    }
+
+    @Override
+    public String[] getYears(String dataFileName) {
+        return presenter.getYears(dataFileName);
     }
 }

@@ -14,7 +14,7 @@ public class SettingsSetter {
     public SettingsSetter(JFrame window) {
 
         try {
-            //window.setIconImage(new ImageIcon(Data.ICON.getPath()).getImage());
+            window.setIconImage(new ImageIcon(Data.ICON.getPath()).getImage());
             font = Font.createFont(Font.TRUETYPE_FONT,
                     new java.io.File(Data.FONT.getPath()));
         } catch (Exception e) {

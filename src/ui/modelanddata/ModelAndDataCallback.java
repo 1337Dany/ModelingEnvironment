@@ -1,11 +1,9 @@
-package ui;
-
-import data.Model;
+package ui.modelanddata;
 
 import java.io.File;
 import java.util.List;
 
-public interface ViewCallback {
+public interface ModelAndDataCallback {
     List<String> getModels();
     List<File> getDatas();
     void runModel(String model, String dataFileName);

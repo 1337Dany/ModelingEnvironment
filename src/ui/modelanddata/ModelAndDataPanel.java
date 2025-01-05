@@ -1,7 +1,4 @@
-package ui;
-
-import data.Model;
-import ui.ViewCallback;
+package ui.modelanddata;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +7,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 
 public class ModelAndDataPanel extends JPanel {
-    private final ViewCallback viewCallback;
+    private final ModelAndDataCallback callback;
     private final JPanel choosePanel = new JPanel();
     private final JButton chooseButton = new JButton("Run model");
     private final JPanel modelPanel = new JPanel();
@@ -20,8 +17,8 @@ public class ModelAndDataPanel extends JPanel {
     private JLabel selectedModel;
     private JLabel selectedData;
 
-    public ModelAndDataPanel(ViewCallback viewCallback) {
-        this.viewCallback = viewCallback;
+    public ModelAndDataPanel(ModelAndDataCallback callback) {
+        this.callback = callback;
 
         configureModelPanel();
         configureDataPanel();
@@ -44,7 +41,7 @@ public class ModelAndDataPanel extends JPanel {
 
         chooseButton.addActionListener(e -> {
             if (selectedModel != null && selectedData != null) {
-               viewCallback.runModel(selectedModel.getText(), selectedData.getText());
+               callback.runModel(selectedModel.getText(), selectedData.getText());
             }
         });
 
@@ -68,7 +65,7 @@ public class ModelAndDataPanel extends JPanel {
         modelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
 
         //  adding models
-        for(String model : viewCallback.getModels()) {
+        for(String model : callback.getModels()) {
             addModel(model);
         }
     }
@@ -122,7 +119,7 @@ public class ModelAndDataPanel extends JPanel {
         dataPanel.setBackground(Color.WHITE);
         dataPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
 
-        for(File file : viewCallback.getDatas()) {
+        for(File file : callback.getDatas()) {
             addData(file.getName());
         }
     }

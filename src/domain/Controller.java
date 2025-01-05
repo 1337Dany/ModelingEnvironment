@@ -2,10 +2,10 @@ package domain;
 
 import data.Model;
 import data.annotations.Bind;
-import data.models.Model1;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -17,7 +17,7 @@ public class Controller {
 
     public Controller(String modelName) {
         try {
-            this.model =(Model) Class.forName("data.models." + modelName).newInstance();
+            this.model = (Model) Class.forName("data.models." + modelName).newInstance();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -29,17 +29,12 @@ public class Controller {
             Map<String, double[]> data = new HashMap<>();
             String line;
             int LL = 0;     // number of years of simulation
-            int[] years = null;
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (line.startsWith("LATA")) {
                     String[] parts = line.split("\\s+");
                     LL = parts.length - 1;
-                    years = new int[LL];
-                    for (int i = 1; i < parts.length; i++) {
-                        years[i - 1] = Integer.parseInt(parts[i]);
-                    }
                     data.put("LL", new double[]{LL});
                 } else {
                     String[] parts = line.split("\\s+");
@@ -57,7 +52,7 @@ public class Controller {
                     field.setAccessible(true);
                     if (field.getName().equals("LL")) {
                         field.set(model, LL);
-                    }else if (field.getType().isArray() && field.getType().getComponentType() == double.class) {
+                    } else if (field.getType().isArray() && field.getType().getComponentType() == double.class) {
                         double[] values = data.get(field.getName());
                         if (values == null) {
                             //throw new RuntimeException("Данные для поля '" + field.getName() + "' отсутствуют в входных данных.");
@@ -116,7 +111,6 @@ public class Controller {
                 }
             }
 
-            // Формируем TSV из переменных scriptVariables
             for (Map.Entry<String, double[]> entry : scriptVariables.entrySet()) {
                 sb.append(entry.getKey()).append("\t");
                 for (double value : entry.getValue()) {
@@ -130,5 +124,27 @@ public class Controller {
         }
 
         return sb.toString();
+    }
+
+    public String[] getYears(String fname) {
+        String[] years = null;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fname))) {
+            String line;
+            line = reader.readLine();
+            line = line.trim();
+            if (line.startsWith("LATA")) {
+                String[] parts = line.split("\\s+");
+                int LL = parts.length;
+                years = new String[LL];
+                years[0] = "LATA";
+                for (int i = 1; i < parts.length; i++) {
+                    years[i] = parts[i];
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return years;
     }
 }
