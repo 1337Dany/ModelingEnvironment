@@ -18,6 +18,9 @@ public class Presenter implements PresenterContract {
     public Presenter() {
         //  Models initialization
         models.add("Model1");
+        models.add("Model2");
+        models.add("Model3");
+        models.add("Model4");
 
         //  Data initialization
         datas = Arrays.asList(Objects.requireNonNull(new File(Data.DATA_SOURCE.getPath()).listFiles()));
