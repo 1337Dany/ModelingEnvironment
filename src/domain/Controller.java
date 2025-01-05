@@ -192,6 +192,7 @@ public class Controller {
         shell.evaluate(script);
 
         for (Object obj : binding.getVariables().entrySet()) {
+            @SuppressWarnings("unchecked")
             Map.Entry<String, Object> entry = (Map.Entry<String, Object>) obj;
 
             if(entry.getKey().length() < 2 && entry.getKey().matches("[a-z]"))

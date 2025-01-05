@@ -2,8 +2,10 @@ package ui.tableandscripts;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.DecimalFormat;
+import java.util.Arrays;
 
-public class TableAndScriptsPanel extends JPanel{
+public class TableAndScriptsPanel extends JPanel {
     private final TableAndScriptsCallback callback;
     private final JPanel tablePanel = new JPanel();
     private final JPanel scriptsPanel = new JPanel();
@@ -44,10 +46,11 @@ public class TableAndScriptsPanel extends JPanel{
 
     public void updateTable(String sourceTable) {
         String[] lines = sourceTable.trim().split("\n");
-        Object[][] tableData = new Object[lines.length][];
+        String[][] tableData = new String[lines.length][];
         for (int i = 0; i < lines.length; i++) {
             String[] parts = lines[i].split("\\t");
             tableData[i] = parts;
+            tableData[i] = Arrays.stream(tableData[i]).map(this::formatValue).toArray(String[]::new);
         }
 
         JTable table = new JTable(tableData, callback.getYears());
@@ -59,5 +62,17 @@ public class TableAndScriptsPanel extends JPanel{
         tablePanel.add(new JScrollPane(table));
         tablePanel.revalidate();
         tablePanel.repaint();
+    }
+
+    private String formatValue(String value) {
+        try {
+            double number = Double.parseDouble(value);
+
+            DecimalFormat formatter = new DecimalFormat("#,###.##");
+            return formatter.format(number).replace(",", " ");
+        } catch (NumberFormatException e) {
+            return value;
+        }
+
     }
 }
