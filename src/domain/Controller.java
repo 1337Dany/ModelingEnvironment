@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Controller {
-    private Map<String, double[]> scriptVariables = new LinkedHashMap<>();
+    private final Map<String, double[]> scriptVariables = new LinkedHashMap<>();
     private final Model model;
 
     public Controller(String modelName) {
@@ -58,7 +58,6 @@ public class Controller {
                     } else if (field.getType().isArray() && field.getType().getComponentType() == double.class) {
                         double[] values = data.get(field.getName());
                         if (values == null) {
-                            //throw new RuntimeException("Данные для поля '" + field.getName() + "' отсутствуют в входных данных.");
                             values = new double[LL];
                         } else if (values.length < LL) {
                             double[] extended = new double[LL];
@@ -99,7 +98,7 @@ public class Controller {
                         sb.append(fieldName).append("\t");
                         for (double value : values) {
                             String formatted = String.format("%.2f", value);
-                            formatted = formatted.replace(",", ".");
+                            formatted = formatted.replace(",", ".");    // replace comma with dot for decimal numbers
                             sb.append(formatted).append("\t");
                         }
                     } else if (field.getType().getComponentType() == int.class) {
@@ -114,6 +113,7 @@ public class Controller {
                 }
             }
 
+            //Made for checking script vars in case of adding additional ad-hoc scripts
             for (Map.Entry<String, double[]> entry : scriptVariables.entrySet()) {
                 sb.append(entry.getKey()).append("\t");
                 for (double value : entry.getValue()) {
@@ -141,9 +141,7 @@ public class Controller {
                 int LL = parts.length;
                 years = new String[LL];
                 years[0] = "LATA";
-                for (int i = 1; i < parts.length; i++) {
-                    years[i] = parts[i];
-                }
+                System.arraycopy(parts, 1, years, 1, parts.length - 1);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

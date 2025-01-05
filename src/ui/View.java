@@ -15,12 +15,12 @@ import java.awt.*;
 import java.io.File;
 import java.util.List;
 
-public class View extends JFrame implements ViewContract, ModelAndDataCallback, TableAndScriptsCallback, AdHocScriptCreatorCallback {
+public class View extends JFrame implements ModelAndDataCallback, TableAndScriptsCallback, AdHocScriptCreatorCallback {
     private final PresenterContract presenter = new Presenter();
     private final ModelAndDataPanel modelAndDataPanel = new ModelAndDataPanel(this);
     private final TableAndScriptsPanel tableAndScriptsPanel = new TableAndScriptsPanel(this);
     private static final Dimension frameSize = new Dimension(1000, 600);
-    private final SettingsSetter settingsSetter = new SettingsSetter(this);
+    {new SettingsSetter(this);}
 
     public void openMainJFrame() {
         configure();
@@ -66,7 +66,8 @@ public class View extends JFrame implements ViewContract, ModelAndDataCallback, 
 
     @Override
     public void runScriptFromFile() {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(new File("src/resources/scripts"));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         int result = fileChooser.showOpenDialog(this);
 

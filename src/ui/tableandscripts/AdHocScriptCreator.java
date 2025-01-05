@@ -6,11 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AdHocScriptCreator extends JFrame {
-    private AdHocScriptCreatorCallback callback;
+    private final AdHocScriptCreatorCallback callback;
     private final JTextArea scriptTextArea = new JTextArea();
     private final JPanel buttonPanel = new JPanel();
     private static final Dimension AdHocScriptCreatorFrameSize = new Dimension(600, 300);
-    private final SettingsSetter settingsSetter = new SettingsSetter(this);
+    {new SettingsSetter(this);}
 
     public AdHocScriptCreator(AdHocScriptCreatorCallback callback) {
         this.callback = callback;
