@@ -1,10 +1,12 @@
 package ui;
 
-import domain.Presenter;
-import domain.PresenterContract;
+import domain.presenter.Presenter;
+import domain.presenter.PresenterContract;
 import domain.SettingsSetter;
 import ui.modelanddata.ModelAndDataCallback;
 import ui.modelanddata.ModelAndDataPanel;
+import ui.tableandscripts.AdHocScriptCreator;
+import ui.tableandscripts.AdHocScriptCreatorCallback;
 import ui.tableandscripts.TableAndScriptsCallback;
 import ui.tableandscripts.TableAndScriptsPanel;
 
@@ -13,7 +15,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.List;
 
-public class View extends JFrame implements ViewContract, ModelAndDataCallback, TableAndScriptsCallback {
+public class View extends JFrame implements ViewContract, ModelAndDataCallback, TableAndScriptsCallback, AdHocScriptCreatorCallback {
     private final PresenterContract presenter = new Presenter();
     private final ModelAndDataPanel modelAndDataPanel = new ModelAndDataPanel(this);
     private final TableAndScriptsPanel tableAndScriptsPanel = new TableAndScriptsPanel(this);
@@ -54,11 +56,36 @@ public class View extends JFrame implements ViewContract, ModelAndDataCallback, 
 
     @Override
     public void runModel(String model, String dataFileName) {
-        tableAndScriptsPanel.updateTable(presenter.runModel(model, dataFileName), dataFileName);
+        tableAndScriptsPanel.updateTable(presenter.runModel(model, dataFileName));
     }
 
     @Override
-    public String[] getYears(String dataFileName) {
-        return presenter.getYears(dataFileName);
+    public String[] getYears() {
+        return presenter.getYears();
+    }
+
+    @Override
+    public void runScriptFromFile() {
+        JFileChooser fileChooser = new JFileChooser();
+
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            String filePath = selectedFile.getAbsolutePath();
+            String refactoredTabel = presenter.runScriptFromFile(filePath);
+            tableAndScriptsPanel.updateTable(refactoredTabel);
+        }
+    }
+
+    @Override
+    public void createAndRunAdHocScript() {
+        new AdHocScriptCreator(this);
+    }
+
+    @Override
+    public void onRunAdHocScriptButton(String scriptCode) {
+        tableAndScriptsPanel.updateTable(presenter.createAndRunAdHocScript(scriptCode));
     }
 }

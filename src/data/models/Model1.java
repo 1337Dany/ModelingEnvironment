@@ -1,6 +1,5 @@
 package data.models;
 
-import data.Model;
 import data.annotations.Bind;
 
 public class Model1 implements Model {

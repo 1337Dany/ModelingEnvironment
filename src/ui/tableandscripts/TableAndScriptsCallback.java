@@ -1,5 +1,7 @@
 package ui.tableandscripts;
 
 public interface TableAndScriptsCallback {
-    String[] getYears(String dataFileName);
+    String[] getYears();
+    void runScriptFromFile();
+    void createAndRunAdHocScript();
 }
