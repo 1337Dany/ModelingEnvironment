@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -80,6 +81,12 @@ public class Controller {
 
     public Controller runModel() {
         model.run();
+//        try{
+//
+//            model.getClass().getDeclaredMethod("run").invoke(model);
+//        }catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
+//            e.printStackTrace();
+//        }
         return this;
     }
 

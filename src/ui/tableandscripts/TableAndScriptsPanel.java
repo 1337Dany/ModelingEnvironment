@@ -1,6 +1,7 @@
 package ui.tableandscripts;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -57,6 +58,15 @@ public class TableAndScriptsPanel extends JPanel {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setFillsViewportHeight(true);
         table.setEnabled(false);
+
+        // Create a custom cell renderer that aligns text to the right
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        // Apply the custom renderer to all columns except the first one
+        for (int i = 1; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
+        }
 
         tablePanel.removeAll();
         tablePanel.add(new JScrollPane(table));
